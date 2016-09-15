@@ -65,7 +65,8 @@ class Model():
             print (word)
             x = np.zeros((1, 1))
             x[0, 0] = vocab[word]
-            feed = {self.input_data: x, self.initial_state:state}
+            # catch here and use predefined answer
+	    feed = {self.input_data: x, self.initial_state:state}
             [state] = sess.run([self.final_state], feed)
 
         def weighted_pick(weights):
