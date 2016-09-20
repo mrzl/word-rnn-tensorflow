@@ -7,12 +7,12 @@ import re
 import itertools
 
 class TextLoader():
-    def __init__(self, data_dir, batch_size, seq_length):
+    def __init__(self, data_dir, input_text_filename, batch_size, seq_length):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.seq_length = seq_length
 
-        input_file = os.path.join(data_dir, "input.txt")
+        input_file = os.path.join(data_dir, input_text_filename)
         vocab_file = os.path.join(data_dir, "vocab.pkl")
         tensor_file = os.path.join(data_dir, "data.npy")
 

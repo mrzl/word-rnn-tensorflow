@@ -12,5 +12,5 @@ Mostly reused code from https://github.com/sherjilozair/char-rnn-tensorflow whic
 
     cd /home/marcel/devel/word-rnn-tensorflow
     workon caffe
-    python train.py --data_dir data/medosch/ --save_dir ./medosch --model lstm --save_every 100
+    python train.py --data_dir data/medosch/ --train_filename  input.txt --save_dir ./medosch --model lstm --save_every 100
     python sample.py --save_dir medosch --prime 'quantum'
