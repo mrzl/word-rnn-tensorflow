@@ -11,6 +11,6 @@ Mostly reused code from https://github.com/sherjilozair/char-rnn-tensorflow whic
 # Basic Usage
 
     cd /home/marcel/devel/word-rnn-tensorflow
-    workon caffe
-    python train.py --data_dir data/medosch/ --train_filename  input.txt --save_dir ./medosch --model lstm --save_every 100
-    python sample.py --save_dir medosch --prime 'quantum'
+    workon eco_tensorflow
+    python train.py --data_dir data/ --train_filename slavoj_zizek-the_parallax_view.txt --save_dir ./saved/slavoj_zizek-the_parallax_view --model lstm --save_every 100
+    python sample.py --save_dir saved/slavoj_zizek-the_parallax_view
