@@ -61,7 +61,7 @@ class Model():
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
 
     def sample(self, sess, words, vocab, num=200, prime='first all', sampling_type=1):
-        state = self.cell.zero_state(1, tf.float32).eval()
+        state = self.cell.zero_state(1, tf.float32).eval(session=sess)
         print ('prime: ' + prime)
         for word in [prime]:
             print (word)
