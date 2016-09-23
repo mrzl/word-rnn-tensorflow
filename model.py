@@ -62,8 +62,8 @@ class Model():
 
     def sample(self, sess, words, vocab, num=200, prime='first all', sampling_type=1):
         state = self.cell.zero_state(1, tf.float32).eval(session=sess)
+        print('prime: ' + prime)
         for word in prime.split()[-1]:
-            print (word)
             x = np.zeros((1, 1))
             if word not in vocab:
                 return 'no answer'
