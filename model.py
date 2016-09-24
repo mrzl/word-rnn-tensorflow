@@ -60,17 +60,19 @@ class Model():
         optimizer = tf.train.AdamOptimizer(self.lr)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
 
-    def sample(self, sess, words, vocab, num=200, prime='first all', sampling_type=1):
+    def sample(self, sess, words, vocab, num=50, prime='first all', sampling_type=2):
         state = self.cell.zero_state(1, tf.float32).eval(session=sess)
         print('prime: ' + prime)
-        for word in prime.split()[-1]:
-            x = np.zeros((1, 1))
-            if word not in vocab:
-                return 'no answer'
-            x[0, 0] = vocab[word]
-            # catch here and use predefined answer
-            feed = {self.input_data: x, self.initial_state: state}
-            [state] = sess.run([self.final_state], feed)
+        #for word in prime.split()[-1]:
+        word = prime.split()[-1]
+        x = np.zeros((1, 1))
+        if word not in vocab:
+            return 'no answer'
+        res = vocab[word]
+        x[0, 0] = res
+        # catch here and use predefined answer
+        feed = {self.input_data: x, self.initial_state: state}
+        [state] = sess.run([self.final_state], feed)
 
         def weighted_pick(weights):
             t = np.cumsum(weights)
@@ -78,7 +80,7 @@ class Model():
             return (int(np.searchsorted(t, np.random.rand(1) * s)))
 
         ret = prime
-        word = prime.split()[-1]
+        #word = prime.split()[-1]
         for n in range(num):
             x = np.zeros((1, 1))
             x[0, 0] = vocab[word]
