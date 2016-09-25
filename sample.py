@@ -1,6 +1,8 @@
 from __future__ import print_function
 import tensorflow as tf
 
+import word_lstm_wrapper
+
 import argparse
 import os
 from six.moves import cPickle
@@ -18,7 +20,7 @@ def main():
                        help='0 to use max at each timestep, 1 to sample at each timestep, 2 to sample on spaces')
 
     args = parser.parse_args()
-    sample(args)
+    return args
 
 
 def sample(args):
@@ -38,4 +40,11 @@ def sample(args):
                 print(model.sample(sess, words, vocab, args.n, input, args.sample))
 
 if __name__ == '__main__':
-    main()
+    args = vars(main())
+    #sample(args)
+    save_dir = args['save_dir']
+    wr = word_lstm_wrapper.WordLevelLSTM(save_dir)
+    while True:
+        input = raw_input('input: ')
+        answer = wr.sample(input=input)
+        print(answer)
