@@ -7,20 +7,25 @@ from model import Model
 
 
 class WordLevelLSTM(object):
-    def __init__(self, load_dir):
-        print('Loading from ' + load_dir)
-        with open(os.path.join(load_dir, 'config.pkl'), 'rb') as f:
-            saved_args = cPickle.load(f)
-        with open(os.path.join(load_dir, 'words_vocab.pkl'), 'rb') as f:
-            self.words, self.vocab = cPickle.load(f)
-        self.model = Model(saved_args, True)
-        self.sess = tf.Session()
-        tf.initialize_all_variables().run(session=self.sess)
-        saver = tf.train.Saver(tf.all_variables())
-        ckpt = tf.train.get_checkpoint_state(load_dir)
-        if ckpt and ckpt.model_checkpoint_path:
-            saver.restore(self.sess, ckpt.model_checkpoint_path)
-
+    def __init__(self, load_dir, varscope):
+        self.load_dir = load_dir
+        self.varscope = varscope
+        self.load_dir = load_dir
 
     def sample(self, input, sample=1, output_length=200):
-        return self.model.sample(self.sess, self.words, self.vocab, output_length, input, sample)
+        print('Loading from ' + self.load_dir)
+        with open(os.path.join(self.load_dir, 'config.pkl'), 'rb') as f:
+            self.saved_args = cPickle.load(f)
+        with open(os.path.join(self.load_dir, 'words_vocab.pkl'), 'rb') as f:
+            self.words, self.vocab = cPickle.load(f)
+
+        model = Model(self.saved_args, infer=False, varscope=self.varscope)
+        vars = [k for k in tf.all_variables() if k.name.startswith(self.varscope)]
+        with tf.Session() as sess:
+            saver = tf.train.Saver(vars)
+            ckpt = tf.train.get_checkpoint_state(self.load_dir)
+            if ckpt and ckpt.model_checkpoint_path:
+                saver.restore(sess, ckpt.model_checkpoint_path)
+            answer = model.sample(sess, self.words, self.vocab, output_length, input, sample)
+            sess.close()
+            return answer

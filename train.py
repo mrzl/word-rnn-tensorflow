@@ -70,8 +70,10 @@ def train(args):
         cPickle.dump(args, f)
     with open(os.path.join(args.save_dir, 'words_vocab.pkl'), 'wb') as f:
         cPickle.dump((data_loader.words, data_loader.vocab), f)
-        
-    model = Model(args)
+
+    head, varscope = os.path.split(args.save_dir)
+    print("Training with varscope: " + varscope)
+    model = Model(args, varscope=varscope)
 
     with tf.Session() as sess:
         tf.initialize_all_variables().run()
