@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--batch_size', type=int, default=50, help='minibatch size')
     parser.add_argument('--seq_length', type=int, default=25, help='RNN sequence length')
     parser.add_argument('--num_epochs', type=int, default=200, help='number of epochs')
-    parser.add_argument('--save_every', type=int, default=1000, help='save frequency')
+    parser.add_argument('--save_every', type=int, default=2000, help='save frequency')
     parser.add_argument('--grad_clip', type=float, default=5., help='clip gradients at this value')
     parser.add_argument('--learning_rate', type=float, default=0.002, help='learning rate')
     parser.add_argument('--decay_rate', type=float, default=0.97, help='decay rate for rmsprop')
