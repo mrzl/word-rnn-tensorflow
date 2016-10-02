@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Model():
-    def __init__(self, args, infer=False, varscope='rnnlm'):
+    def __init__(self, args, varscope, infer=False ):
         self.args = args
         if infer:
             args.batch_size = 1
@@ -61,11 +61,53 @@ class Model():
         optimizer = tf.train.AdamOptimizer(self.lr)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
 
-    def sample(self, sess, words, vocab, num=50, prime='first all', sampling_type=2):
+    def sample(self, sess, words, vocab, num=200, prime='first all', sampling_type=1):
+        state = self.cell.zero_state(1, tf.float32).eval(session=sess)
+        prime = list(vocab.keys())[2]
+        print (prime)
+        for word in [prime]:
+            print (word)
+            x = np.zeros((1, 1))
+            x[0, 0] = vocab[word]
+            feed = {self.input_data: x, self.initial_state: state}
+            [state] = sess.run([self.final_state], feed)
+
+        def weighted_pick(weights):
+            t = np.cumsum(weights)
+            s = np.sum(weights)
+            return (int(np.searchsorted(t, np.random.rand(1) * s)))
+
+        ret = prime
+        word = prime
+        for n in range(num):
+            x = np.zeros((1, 1))
+            x[0, 0] = vocab[word]
+            feed = {self.input_data: x, self.initial_state: state}
+            [probs, state] = sess.run([self.probs, self.final_state], feed)
+            p = probs[0]
+
+            if sampling_type == 0:
+                sample = np.argmax(p)
+            elif sampling_type == 2:
+                if word == '\n':
+                    sample = weighted_pick(p)
+                else:
+                    sample = np.argmax(p)
+            else:  # sampling_type == 1 default:
+                sample = weighted_pick(p)
+
+            pred = words[sample]
+            ret += ' ' + pred
+            word = pred
+
+        return ret
+
+    def sample2(self, sess, words, vocab, num=50, prime='first all', sampling_type=1):
         state = self.cell.zero_state(1, tf.float32).eval(session=sess)
         print('prime: ' + prime)
         #for word in prime.split()[-1]:
-        word = prime.split()[-1]
+        word = prime.split()[0]
+        print('word: ' + word)
         x = np.zeros((1, 1))
         if word not in vocab:
             return 'no answer'
@@ -81,7 +123,7 @@ class Model():
                 s = np.sum(weights)
                 return (int(np.searchsorted(t, np.random.rand(1) * s)))
 
-            ret = prime
+            ret = word
             #word = prime.split()[-1]
             for n in range(num):
                 x = np.zeros((1, 1))
