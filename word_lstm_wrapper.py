@@ -11,6 +11,7 @@ class WordLevelLSTM(object):
         self.load_dir = load_dir
         self.varscope = varscope
         self.load_dir = load_dir
+        self.name = None
 
     def sample(self, input, sample=1, output_length=200):
         print('Loading from ' + self.load_dir)
